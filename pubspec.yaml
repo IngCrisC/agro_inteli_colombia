@@ -1,6 +1,6 @@
 name: agro_inteli_colombia
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
@@ -14,6 +14,15 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.13.1
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/icons/
+
+flutter_icons:
+  adroind: true
+  ios: true
+  image_path: "assets/icons/agro-inteli-colombia.jpeg"
+  adaptive_icon_background: "#589F36"
