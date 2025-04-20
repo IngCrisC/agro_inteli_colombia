@@ -1,0 +1,2 @@
+C:/Users/sntbg/Documents/Universidad/Hibridas/agro_inteli_colombia/android/app/.cxx/Debug/j1s73h30/x86/CMakeFiles/edit_cache.dir
+C:/Users/sntbg/Documents/Universidad/Hibridas/agro_inteli_colombia/android/app/.cxx/Debug/j1s73h30/x86/CMakeFiles/rebuild_cache.dir

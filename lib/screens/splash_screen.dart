@@ -15,7 +15,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     Future.delayed(const Duration(seconds: 2), () {
       // se establece que espere 5 segundos y luego pase a la vista home
-      Navigator.of(context).pushReplacementNamed(Routes.register);
+      Navigator.of(context).pushReplacementNamed(Routes.login);
     });
   }
 

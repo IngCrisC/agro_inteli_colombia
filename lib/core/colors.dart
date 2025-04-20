@@ -6,4 +6,6 @@ class AppColors {
   static const Color secondaryColor = Color(0xFF638D43);
   static const Color thirdColor = Color(0xFF828282);
   static const Color ignoreColor = Color.fromARGB(255, 145, 145, 145);
+  static const Color background = Color(0xffffffff);
+  static const Color grey = Color(0xFFEEEEEE);
 }

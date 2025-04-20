@@ -22,7 +22,11 @@ flutter:
     - assets/icons/
 
 flutter_icons:
-  adroind: true
+  android: true
   ios: true
-  image_path: "assets/icons/3.png"
-  adaptive_icon_background: "#589F36"
+  image_path: "assets/icons/logo.png"
+#  adaptive_icon_background: "#589F36"
+
+
+
+

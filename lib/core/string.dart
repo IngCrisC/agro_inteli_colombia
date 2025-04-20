@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 // En este archivo se crean todos los textos que usaran en el resto de la aplicacion, luego se llaman por medio del nombre de la variable y del archivo.
 class AppStrings {
-  static const String nameApp = "Agro inteli Colombia";
+  static const String nameApp = "Agro Inteli Colombia";
 
   static const String nameLastName = "Nombres y Apellidos";
   static const String login = "Iniciar Sesión";
-  static const String restore = "Recupera tu contraseña";
-  static const String google = "Ingresa con Google";
+  static const String restore = "Olvide mi contraseña";
+  static const String google = "Continuar con Google";
   static const String anyAcount = "¿no tienes cuenta?";
   static const String register = "Regístrate";
   static const String myName = "Cristian Chavez :)";
@@ -25,4 +25,13 @@ class AppStrings {
   static const String howRegister = "Seleccione como desea registrarce";
   static const String consumer = "Consumidor";
   static const String farmer = "Agricultor";
+  static const String welcome = "Bienvenido";
+  static const String editProfile = "Editar Datos";
+  static const String changePassword = "Cambiar Contraseña";
+
+  static const String dataUser = "Mis datos";
+  static const String shopping = "Mis compras";
+  static const String products = "Productos";
+  static const String description = "Descripción";
+  static const String price = "Precio";
 }
