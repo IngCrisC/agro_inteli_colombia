@@ -4,4 +4,5 @@ class Routes {
   static const String login = '/login';
   static const String profile = '/profile';
   static const String HomeC = "/Home";
+  static const String geoMap = '/map';
 }

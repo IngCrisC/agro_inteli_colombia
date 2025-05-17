@@ -1,4 +1,6 @@
+import 'package:agro_inteli_colombia/screens/record_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../../core/routes.dart';
 import '../../core/colors.dart';
 import '../../core/string.dart';
@@ -11,6 +13,40 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email', 'profile']);
+
+  bool _isLoading = false;
+
+  Future<void> handleGoogleSignIn() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+
+      if (googleUser != null) {
+        final GoogleSignInAuthentication googleAuth =
+            await googleUser.authentication;
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => RegisterScreen(),
+            ));
+      }
+    } catch (err) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Error al iniciar sesión'),
+      ));
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
   final _formLogin = GlobalKey<FormState>();
   bool _isPasswordVisible = false;
 
@@ -210,10 +246,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context)
-                                .pushReplacementNamed(Routes.register);
-                          },
+                          onPressed: handleGoogleSignIn,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.grey,
                             padding: EdgeInsets.symmetric(
@@ -246,6 +279,33 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ],
                   ),
+                  Row(children: [
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: () async {
+                          // Navegar a la pantalla de mapa y esperar resultado
+                          final result =
+                              await Navigator.pushNamed(context, Routes.geoMap);
+
+                          // Procesar el resultado (coordenadas seleccionadas)
+                          if (result != null && result is Map<String, double>) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Ubicación seleccionada: ${result['latitude']?.toStringAsFixed(6)}, ${result['longitude']?.toStringAsFixed(6)}',
+                                ),
+                                backgroundColor: Colors.green,
+                                duration: const Duration(seconds: 5),
+                              ),
+                            );
+                          }
+                        },
+                        icon: const Icon(Icons.map), // ícono obligatorio
+                        label: const Text(
+                            'Seleccionar ubicación'), // texto obligatorio
+                      ),
+                    ),
+                  ]),
                   const SizedBox(height: 16),
                   Row(
                     children: [
