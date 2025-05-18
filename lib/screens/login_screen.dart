@@ -134,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               child: ElevatedButton(
                                 onPressed: () {
                                   Navigator.of(context).pushReplacementNamed(
-                                      Routes.profile); //cambair al home
+                                      Routes.HomeC); //cambair al home
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: AppColors.secondaryColor,
@@ -166,7 +166,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: TextButton(
                           onPressed: () {
                             Navigator.of(context)
-                                .pushReplacementNamed(Routes.login);
+                                .pushReplacementNamed(Routes.HomeC);
                           },
                           style: TextButton.styleFrom(
                             padding: EdgeInsets.zero,
@@ -212,7 +212,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.of(context)
-                                .pushReplacementNamed(Routes.login);
+                                .pushReplacementNamed(Routes.register);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.grey,

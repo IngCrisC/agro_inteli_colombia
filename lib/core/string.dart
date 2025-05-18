@@ -34,4 +34,12 @@ class AppStrings {
   static const String products = "Productos";
   static const String description = "Descripción";
   static const String price = "Precio";
+  static const String addProduct = "Agregar Producto";
+  static const String nameByProduct = "Nombre del producto";
+  static const String unitOfMeasurement = "Unidad de medida";
+  static const String pricePerUnit = "Precio por unidad";
+  static const String quantityAvailable = "Cantidad disponible";
+  static const String image = "Imagen:";
+  static const String uploadImageByDevice =
+      "Cargar imagen desde el dispositivo";
 }

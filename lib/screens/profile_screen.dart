@@ -13,6 +13,15 @@ class ProfileScreen extends StatelessWidget {
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: AppColors.background,
         selectedItemColor: AppColors.secondaryColor,
+        onTap: (index) {
+          if (index == 0) {
+            Navigator.pushNamed(context, '/Home');
+          } else if (index == 1) {
+            Navigator.pushNamed(context, '/cart');
+          } else if (index == 2) {
+            Navigator.pushNamed(context, '/profile');
+          }
+        },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
           BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: ''),
@@ -71,7 +80,7 @@ class ProfileScreen extends StatelessWidget {
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).pushReplacementNamed(
-                              Routes.profile); //cambair al home
+                              Routes.HomeC); //cambair al home LISTO
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.secondaryColor,
@@ -100,7 +109,7 @@ class ProfileScreen extends StatelessWidget {
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).pushReplacementNamed(
-                              Routes.login); //cambair al home
+                              Routes.HomeC); //cambair al home LISTO
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.background,
