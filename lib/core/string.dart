@@ -42,4 +42,5 @@ class AppStrings {
   static const String image = "Imagen:";
   static const String uploadImageByDevice =
       "Cargar imagen desde el dispositivo";
+  static const String myProducts = "Mis productos";
 }

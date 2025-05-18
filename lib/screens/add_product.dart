@@ -367,7 +367,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 ],
               ),
               const SizedBox(height: 24),
-              // Se usa RichText en este caso ya que permite combinar estilos e incluir enlaces sin romper el flujo del texto.
               Row(
                 children: [
                   Expanded(

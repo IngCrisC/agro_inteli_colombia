@@ -7,6 +7,7 @@ import 'package:agro_inteli_colombia/screens/profile_screen.dart';
 import 'package:agro_inteli_colombia/core/string.dart';
 import 'package:agro_inteli_colombia/core/routes.dart';
 import 'package:agro_inteli_colombia/screens/add_product.dart';
+import 'package:agro_inteli_colombia/screens/home_farmer.dart';
 
 void main() {
   WidgetsFlutterBinding
@@ -22,14 +23,15 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: AppStrings.nameApp,
-      initialRoute: Routes.addProduct,
+      initialRoute: Routes.homeFarmer,
       routes: {
         // Routes.splash: (context) => const SplashScreen(),
         // Routes.register: (context) => const RegisterScreen(),
         // Routes.login: (context) => const LoginScreen(),
         // Routes.profile: (context) => const ProfileScreen(),
         // Routes.HomeC: (context) => HomeConsumer(),
-        Routes.addProduct: (context) => AddProductScreen()
+        Routes.addProduct: (context) => AddProductScreen(),
+        Routes.homeFarmer: (context) => HomeFarmer(),
       },
     );
   }
