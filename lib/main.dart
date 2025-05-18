@@ -8,14 +8,24 @@ import 'package:agro_inteli_colombia/screens/map_screen.dart';
 import 'package:agro_inteli_colombia/core/string.dart';
 import 'package:agro_inteli_colombia/core/routes.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:agro_inteli_colombia/dominan/entities/user.dart';
+import 'package:agro_inteli_colombia/services/usuario_service.dart';
+import 'package:agro_inteli_colombia/services/producto_service.dart';
 
 void main() {
-  runApp(const MainApp());
+  final UsuariotService usuarioService = UsuariotService();
+  final ProductoService productoService = ProductoService(usuarioService);
+  runApp(MainApp(
+    usuarioService: usuarioService,
+    productoService: productoService,
+  ));
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+  final UsuariotService usuarioService;
+  final ProductoService productoService;
+
+  const MainApp(
+      {super.key, required this.usuarioService, required this.productoService});
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +36,10 @@ class MainApp extends StatelessWidget {
       routes: {
         Routes.splash: (context) => const SplashScreen(),
         Routes.register: (context) => const RegisterScreen(),
-        Routes.login: (context) => const LoginScreen(),
+        Routes.login: (context) => LoginScreen(usuarioService: usuarioService),
         Routes.profile: (context) => const ProfileScreen(),
-        Routes.HomeC: (context) => HomeConsumer(),
+        Routes.HomeC: (context) =>
+            HomeConsumer(productoService: productoService),
         Routes.geoMap: (context) => GeoMapScreen(),
       },
       onGenerateRoute: (settings) {

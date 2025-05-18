@@ -3,8 +3,14 @@ import 'package:badges/badges.dart' as badges;
 import '../../core/routes.dart';
 import '../../core/colors.dart';
 import '../../core/string.dart';
+import '../services/producto_service.dart';
+import '../dominan/entities/producto.dart';
 
 class HomeConsumer extends StatelessWidget {
+  final ProductoService productoService;
+  const HomeConsumer({Key? key, required this.productoService})
+      : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,7 +19,7 @@ class HomeConsumer extends StatelessWidget {
         selectedItemColor: AppColors.secondaryColor,
         onTap: (index) {
           if (index == 0) {
-            Navigator.pushNamed(context, '/Home');
+            Navigator.pushNamed(context, '/HomeConsumidor');
           } else if (index == 1) {
             Navigator.pushNamed(context, '/cart');
           } else if (index == 2) {
@@ -75,7 +81,8 @@ class HomeConsumer extends StatelessWidget {
                   ),
                 ),
 
-                ProductosWidget(), //Clase para los slide
+                ProductosWidget(
+                    productoService: productoService), //Clase para los slide
 
                 //Titulo de la siguiente fila de slides
                 Container(
@@ -91,7 +98,7 @@ class HomeConsumer extends StatelessWidget {
                   ),
                 ),
                 //Se llama la clase de los slides
-                ProductosWidget(),
+                ProductosWidget(productoService: productoService),
               ],
             ),
           ),
@@ -115,48 +122,57 @@ class HomeAppBar extends StatelessWidget {
             width: 50,
             height: 50,
           ),
-          Padding(
-              padding: EdgeInsets.only(
-                left: 0,
-              ),
-              child: Column(
-                children: [
-                  Container(
-                    margin: EdgeInsets.symmetric(
-                      horizontal: 15,
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 15,
-                    ),
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 184, 178, 178),
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    //Texto de la Barra de buscar
-                    child: Row(
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(left: 0),
-                          height: 50,
-                          width: 200,
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: "Buscar producto...",
+          Expanded(
+            // Comentario: Envuelve el padding/columna de búsqueda en Expanded
+            child: Padding(
+                padding: EdgeInsets.only(
+                  left: 0, // Ajusta si es necesario
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                      // margin: EdgeInsets.symmetric( // Comentario: Margen horizontal puede ser redundante con el padding del padre
+                      //   horizontal: 15,
+                      // ),
+                      margin: EdgeInsets.only(
+                          left: 15, right: 15), // Comentario: Ajuste de margen
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 15,
+                      ),
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: AppColors.grey,
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      //Texto de la Barra de buscar
+                      child: Row(
+                        children: [
+                          // Comentario: Expanded para que el TextFormField tome el espacio disponible en el Row
+                          Expanded(
+                            // Comentario: Envuelve TextFormField en Expanded
+                            child: Container(
+                              // Comentario: Mantenemos el Container si tiene propósitos de layout
+                              // margin: EdgeInsets.only(left: 0), // Comentario: Este margen puede ser innecesario con Expanded
+                              height: 50, // Altura del Container
+                              // width: 100, // Comentario: Eliminamos width fijo para que Expanded funcione
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: "Buscar producto...",
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                        Icon(
-                          Icons.search,
-                          size: 25,
-                        ),
-                      ],
+                          Icon(
+                            Icons.search,
+                            size: 25,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              )),
-          Spacer(),
+                  ],
+                )),
+          ),
           Badge(
             child: InkWell(
               onTap: () {
@@ -194,7 +210,7 @@ class CategoriasWidget extends StatelessWidget {
             margin: EdgeInsets.symmetric(horizontal: 10),
             padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 184, 178, 178),
+              color: AppColors.grey,
               borderRadius: BorderRadius.circular(20),
             ),
             child: Row(
@@ -222,71 +238,82 @@ class CategoriasWidget extends StatelessWidget {
   }
 }
 
-class ProductosWidget extends StatelessWidget {
-  final List<Map<String, String>> productos = [
-    {
-      "nombre": "Zanahoria",
-      "imagen": "Zanahoria.jpg",
-      "cantidad": "20 Cargas Disponibles",
-      "precio": "\$110.000 Unid."
-    },
-    {
-      "nombre": "Papa",
-      "imagen": "Papa.jpg",
-      "cantidad": "200 Bultos Disponibles",
-      "precio": "\$90.000 Unid."
-    },
-    {
-      "nombre": "Remolacha",
-      "imagen": "Remolacha.jpg",
-      "cantidad": "400 cargas disponibles",
-      "precio": "\$70.000 Unid."
-    },
-    {
-      "nombre": "Cebolla Roja",
-      "imagen": "Cebollaroja.jpg",
-      "cantidad": "150 cargas disponibles",
-      "precio": "\$85.000 Unid."
-    },
-    {
-      "nombre": "Yuca",
-      "imagen": "Yuca.jpg",
-      "cantidad": "100 bultos disponibles",
-      "precio": "\$95.000 Unid."
-    },
-    {
-      "nombre": "Rábano",
-      "imagen": "Rabano.jpg",
-      "cantidad": "50 cargas disponibles",
-      "precio": "\$60.000 Unid."
-    },
-  ];
+class ProductosWidget extends StatefulWidget {
+  // Comentario: Campo para recibir el ProductoService
+  final ProductoService productoService;
+
+  // Comentario: Constructor que requiere el ProductoService
+  const ProductosWidget({Key? key, required this.productoService})
+      : super(key: key);
+
+  @override
+  State<ProductosWidget> createState() => _ProductosWidgetState();
+}
+
+class _ProductosWidgetState extends State<ProductosWidget> {
+  // Comentario: Lista para almacenar los productos obtenidos del servicio
+  List<Producto> _productos = [];
+  // Comentario: Variable para indicar si se está cargando (opcional para UI)
+  bool _isLoading = true;
+
+  // Comentario: Método que se llama al inicializar el widget
+  @override
+  void initState() {
+    super.initState();
+    // Comentario: Llamar al método para cargar los productos
+    _loadProductos();
+  }
+
+  // Comentario: Método para cargar los productos del servicio
+  void _loadProductos() {
+    // Comentario: Obtiene todos los productos del servicio
+    final fetchedProductos = widget.productoService.getAllProductos();
+    // Comentario: Actualiza el estado del widget con los productos obtenidos
+    setState(() {
+      _productos = fetchedProductos;
+      _isLoading = false; // Comentario: La carga ha terminado
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    // Comentario: Muestra un indicador de carga mientras se obtienen los productos
+    if (_isLoading) {
+      return const Center(
+          child:
+              CircularProgressIndicator()); // Comentario: Muestra un spinner de carga
+    }
+
+    // Comentario: Si no hay productos, muestra un mensaje
+    if (_productos.isEmpty) {
+      return const Center(
+          child: Text(
+              'No hay productos disponibles.')); // Comentario: Mensaje si la lista está vacía
+    }
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
-        children: productos.map((producto) {
+        children: _productos.map((producto) {
           return Container(
             margin: EdgeInsets.symmetric(horizontal: 10),
             padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 184, 178, 178),
+              color: AppColors.grey,
               borderRadius: BorderRadius.circular(20),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Image.asset(
-                  "assets/icons/${producto['imagen']}",
+                  producto.imagen,
                   width: 180,
                   height: 180,
                   fit: BoxFit.cover,
                 ),
                 SizedBox(height: 10),
                 Text(
-                  producto['nombre']!,
+                  producto.nombre,
                   style: TextStyle(
                     fontSize: 18,
                     color: Colors.black,
@@ -294,7 +321,7 @@ class ProductosWidget extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  producto['cantidad']!,
+                  '${producto.cantidad} - ${producto.unidadMedida}',
                   style: TextStyle(
                     fontSize: 15,
                     color: Colors.blueGrey,
@@ -302,7 +329,7 @@ class ProductosWidget extends StatelessWidget {
                 ),
                 SizedBox(height: 10),
                 Text(
-                  producto['precio']!,
+                  '${producto.precioUnidad}',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,

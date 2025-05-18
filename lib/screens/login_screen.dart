@@ -4,9 +4,12 @@ import 'package:google_sign_in/google_sign_in.dart';
 import '../../core/routes.dart';
 import '../../core/colors.dart';
 import '../../core/string.dart';
+import '../services/usuario_service.dart';
+import '../dominan/entities/usuario.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  final UsuariotService usuarioService;
+  const LoginScreen({Key? key, required this.usuarioService}) : super(key: key);
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -50,296 +53,338 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formLogin = GlobalKey<FormState>();
   bool _isPasswordVisible = false;
 
+  // Comentario: Controladores para obtener el texto de los campos
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  // Comentario: Variable para mostrar mensajes de login
+  String _loginMessage = '';
+  // Comentario: Variable para guardar el usuario logueado (opcional)
+  Usuario? _loggedInUser;
+  // Comentario: Limpiar controladores al destruir el widget
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _performLogin() {
+    if (_formLogin.currentState!.validate()) {
+      final email = _emailController.text;
+      final password = _passwordController.text;
+
+      final user = widget.usuarioService.iniciarSesion(
+        correo: email,
+        contrasenia: password,
+      );
+
+      setState(() {
+        _loggedInUser = user;
+        if (user != null) {
+          _loginMessage =
+              '¡Inicio de sesión exitoso! Bienvenido, ${user.nombre}';
+          if (user.rol == 'consumidor') {
+            Navigator.of(context).pushReplacementNamed(Routes.HomeC);
+          } else if (user.rol == 'agricultor') {
+            // Navigator.of(context).pushReplacementNamed(Routes.HomeA);
+            print('Login de agricultor exitoso. Navegar a HomeA');
+            // Mantengo la navegación a HomeC para que compiles si Routes.HomeA no existe
+            Navigator.of(context).pushReplacementNamed(
+                Routes.HomeC); // TODO: Cambiar a Routes.HomeA
+          } else {
+            // Rol desconocido o no manejado
+            _loginMessage = 'Login exitoso, pero rol desconocido: ${user.rol}';
+            // Decide a dónde navegar para roles desconocidos
+            Navigator.of(context).pushReplacementNamed(
+                Routes.HomeC); // TODO: Manejar otros roles
+          }
+        } else {
+          _loginMessage = 'Correo o contraseña incorrectos.';
+        }
+      });
+    } else {
+      setState(() {
+        _loginMessage = 'Por favor, ingresa todos los datos.';
+        _loggedInUser = null;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final usuarioService = widget.usuarioService;
     return Scaffold(
         backgroundColor: AppColors.background,
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center, // alineacion vertical
-          crossAxisAlignment:
-              CrossAxisAlignment.center, // alineacion horizontal
-          children: [
-            const Spacer(),
-            Image.asset(
-              'assets/icons/agro-inteli-colombia.png',
-              height: 190,
-              width: 190,
-              fit: BoxFit.contain,
-            ),
-            const SizedBox(height: 12),
-            Text(
-              AppStrings.welcome,
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 25,
-              ),
-            ),
-            const Spacer(),
-            Padding(
-                padding: EdgeInsets.symmetric(horizontal: 30),
-                child: Column(children: [
-                  Form(
-                    key: _formLogin,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          AppStrings.email,
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                          ),
+        body: SingleChildScrollView(
+          // Comentario: Aplicamos el padding DENTRO del SingleChildScrollView
+          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+          child: Center(
+              child: Column(
+                  mainAxisAlignment:
+                      MainAxisAlignment.start, // alineacion vertical
+                  crossAxisAlignment:
+                      CrossAxisAlignment.stretch, // alineacion horizontal
+                  children: [
+                const SizedBox(height: 20),
+                Image.asset(
+                  'assets/icons/agro-inteli-colombia.png',
+                  height: 190,
+                  width: 190,
+                  fit: BoxFit.contain,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  AppStrings.welcome,
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 25,
+                  ),
+                ),
+                const SizedBox(height: 40),
+                Form(
+                  key: _formLogin,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        AppStrings.email,
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
                         ),
-                        const SizedBox(height: 12),
-                        TextFormField(
-                          // Campo para nombre
-                          decoration: const InputDecoration(
-                            hintStyle: TextStyle(
-                                color: AppColors.ignoreColor,
-                                fontWeight: FontWeight.w400),
-                            hintText: 'ejemplo@ejemplo.com',
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                              color: AppColors.thirdColor,
-                              width: 1,
-                            )),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
+                      ),
+                      const SizedBox(height: 12),
+                      TextFormField(
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        // Campo para nombre
+                        decoration: const InputDecoration(
+                          hintStyle: TextStyle(
+                              color: AppColors.ignoreColor,
+                              fontWeight: FontWeight.w400),
+                          hintText: 'ejemplo@ejemplo.com',
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                            color: AppColors.thirdColor,
+                            width: 1,
+                          )),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                            color: AppColors.thirdColor,
+                            width: 2,
+                          )),
+                        ),
+
+                        validator: (value) {
+                          if (value == null || value.isEmpty)
+                            return 'Ingrese su correo';
+                          final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+                          if (!emailRegex.hasMatch(value))
+                            return 'Correo inválido';
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        AppStrings.password,
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      TextFormField(
+                        controller: _passwordController,
+                        decoration: InputDecoration(
+                          hintStyle: TextStyle(
+                              color: AppColors.ignoreColor,
+                              fontWeight: FontWeight.w400),
+                          hintText: '*************',
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                            color: AppColors.thirdColor,
+                            width: 1,
+                          )),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
                               color: AppColors.thirdColor,
                               width: 2,
-                            )),
-                          ),
-
-                          validator: (value) {
-                            if (value == null || value.isEmpty)
-                              return 'Ingrese su correo';
-                            final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
-                            if (!emailRegex.hasMatch(value))
-                              return 'Correo inválido';
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          AppStrings.password,
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        TextFormField(
-                          //controller: _passwordController,
-                          decoration: InputDecoration(
-                            hintStyle: TextStyle(
-                                color: AppColors.ignoreColor,
-                                fontWeight: FontWeight.w400),
-                            hintText: '*************',
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                              color: AppColors.thirdColor,
-                              width: 1,
-                            )),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: AppColors.thirdColor,
-                                width: 2,
-                              ),
-                            ),
-                            suffixIcon: IconButton(
-                              icon: Icon(_isPasswordVisible
-                                  ? Icons.visibility
-                                  : Icons.visibility_off),
-                              onPressed: () => setState(() =>
-                                  _isPasswordVisible = !_isPasswordVisible),
                             ),
                           ),
-                          obscureText: !_isPasswordVisible,
-                          validator: (value) =>
-                              value != null && value.length < 6
-                                  ? 'Mínimo 6 caracteres'
-                                  : null,
+                          suffixIcon: IconButton(
+                            icon: Icon(_isPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off),
+                            onPressed: () => setState(
+                                () => _isPasswordVisible = !_isPasswordVisible),
+                          ),
                         ),
-                        const SizedBox(height: 16),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.of(context).pushReplacementNamed(
-                                      Routes.HomeC); //cambair al home
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.secondaryColor,
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 70, vertical: 10),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                                child: Text(
-                                  AppStrings.login,
-                                  style: TextStyle(
-                                    color: AppColors.background,
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                        obscureText: !_isPasswordVisible,
+                        validator: (value) => value != null && value.length < 6
+                            ? 'Mínimo 6 caracteres'
+                            : null,
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: _performLogin,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.secondaryColor,
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 70, vertical: 10),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
-                            )
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextButton(
-                          onPressed: () {
-                            Navigator.of(context)
-                                .pushReplacementNamed(Routes.HomeC);
-                          },
-                          style: TextButton.styleFrom(
-                            padding: EdgeInsets.zero,
-                            alignment: Alignment.center,
-                          ),
-                          child: Text(
-                            AppStrings.restore,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                              fontWeight: FontWeight.normal,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Divider(
-                          color: Colors.grey,
-                          thickness: 1,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text('O'),
-                      ),
-                      Expanded(
-                        child: Divider(
-                          color: Colors.grey,
-                          thickness: 1,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: handleGoogleSignIn,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.grey,
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 8),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                'assets/icons/google.png',
-                                width: 25,
-                                height: 25,
-                                fit: BoxFit.contain,
-                              ),
-                              SizedBox(width: 20),
-                              Text(
-                                AppStrings.google,
+                              child: Text(
+                                AppStrings.login,
                                 style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 20,
-                                  fontStyle: FontStyle.normal,
+                                  color: AppColors.background,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(children: [
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: () async {
-                          // Navegar a la pantalla de mapa y esperar resultado
-                          final result =
-                              await Navigator.pushNamed(context, Routes.geoMap);
-
-                          // Procesar el resultado (coordenadas seleccionadas)
-                          if (result != null && result is Map<String, double>) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'Ubicación seleccionada: ${result['latitude']?.toStringAsFixed(6)}, ${result['longitude']?.toStringAsFixed(6)}',
-                                ),
-                                backgroundColor: Colors.green,
-                                duration: const Duration(seconds: 5),
-                              ),
-                            );
-                          }
-                        },
-                        icon: const Icon(Icons.map), // ícono obligatorio
-                        label: const Text(
-                            'Seleccionar ubicación'), // texto obligatorio
-                      ),
-                    ),
-                  ]),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pushReplacementNamed(
-                                Routes.register); //cambair al home
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.background,
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 8),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
                             ),
-                            side: BorderSide(
-                                color: AppColors.secondaryColor, width: 3),
-                          ),
-                          child: Text(
-                            AppStrings.register,
-                            style: TextStyle(
-                              color: AppColors.secondaryColor,
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
+                          )
+                        ],
                       )
                     ],
-                  )
-                ])),
-            const Spacer(),
-          ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  _loginMessage,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: _loggedInUser != null
+                        ? Colors.green
+                        : Colors.red, // Color según el resultado
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.of(context)
+                              .pushReplacementNamed(Routes.HomeC);
+                        },
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          alignment: Alignment.center,
+                        ),
+                        child: Text(
+                          AppStrings.restore,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Divider(
+                        color: Colors.grey,
+                        thickness: 1,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text('O'),
+                    ),
+                    Expanded(
+                      child: Divider(
+                        color: Colors.grey,
+                        thickness: 1,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: handleGoogleSignIn,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.grey,
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/icons/google.png',
+                              width: 25,
+                              height: 25,
+                              fit: BoxFit.contain,
+                            ),
+                            SizedBox(width: 20),
+                            Text(
+                              AppStrings.google,
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontStyle: FontStyle.normal,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pushReplacementNamed(
+                              Routes.register); //cambair al home
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.background,
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          side: BorderSide(
+                              color: AppColors.secondaryColor, width: 3),
+                        ),
+                        child: Text(
+                          AppStrings.register,
+                          style: TextStyle(
+                            color: AppColors.secondaryColor,
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                )
+              ])),
         ));
   }
 }
