@@ -10,6 +10,8 @@ import 'package:agro_inteli_colombia/core/routes.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:agro_inteli_colombia/services/usuario_service.dart';
 import 'package:agro_inteli_colombia/services/producto_service.dart';
+import 'package:agro_inteli_colombia/screens/add_product.dart';
+import 'package:agro_inteli_colombia/screens/home_farmer.dart';
 
 void main() {
   final UsuariotService usuarioService = UsuariotService();
@@ -18,6 +20,9 @@ void main() {
     usuarioService: usuarioService,
     productoService: productoService,
   ));
+  WidgetsFlutterBinding
+      .ensureInitialized(); // se usa para inicilizar canales nativos
+  runApp(const MainApp());
 }
 
 class MainApp extends StatelessWidget {
@@ -41,6 +46,8 @@ class MainApp extends StatelessWidget {
         Routes.HomeC: (context) =>
             HomeConsumer(productoService: productoService),
         Routes.geoMap: (context) => GeoMapScreen(),
+        Routes.addProduct: (context) => AddProductScreen(),
+        Routes.homeFarmer: (context) => HomeFarmer(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == '/inicio') {

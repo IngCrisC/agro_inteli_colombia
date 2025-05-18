@@ -53,64 +53,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formLogin = GlobalKey<FormState>();
   bool _isPasswordVisible = false;
 
-  // Comentario: Controladores para obtener el texto de los campos
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-
-  // Comentario: Variable para mostrar mensajes de login
-  String _loginMessage = '';
-  // Comentario: Variable para guardar el usuario logueado (opcional)
-  Usuario? _loggedInUser;
-  // Comentario: Limpiar controladores al destruir el widget
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  void _performLogin() {
-    if (_formLogin.currentState!.validate()) {
-      final email = _emailController.text;
-      final password = _passwordController.text;
-
-      final user = widget.usuarioService.iniciarSesion(
-        correo: email,
-        contrasenia: password,
-      );
-
-      setState(() {
-        _loggedInUser = user;
-        if (user != null) {
-          _loginMessage =
-              '¡Inicio de sesión exitoso! Bienvenido, ${user.nombre}';
-          if (user.rol == 'consumidor') {
-            Navigator.of(context).pushReplacementNamed(Routes.HomeC);
-          } else if (user.rol == 'agricultor') {
-            // Navigator.of(context).pushReplacementNamed(Routes.HomeA);
-            print('Login de agricultor exitoso. Navegar a HomeA');
-            // Mantengo la navegación a HomeC para que compiles si Routes.HomeA no existe
-            Navigator.of(context).pushReplacementNamed(
-                Routes.HomeC); // TODO: Cambiar a Routes.HomeA
-          } else {
-            // Rol desconocido o no manejado
-            _loginMessage = 'Login exitoso, pero rol desconocido: ${user.rol}';
-            // Decide a dónde navegar para roles desconocidos
-            Navigator.of(context).pushReplacementNamed(
-                Routes.HomeC); // TODO: Manejar otros roles
-          }
-        } else {
-          _loginMessage = 'Correo o contraseña incorrectos.';
-        }
-      });
-    } else {
-      setState(() {
-        _loginMessage = 'Por favor, ingresa todos los datos.';
-        _loggedInUser = null;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final usuarioService = widget.usuarioService;
