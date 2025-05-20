@@ -4,7 +4,6 @@ import '../../core/colors.dart';
 import '../dominan/entities/producto.dart';
 import '../services/producto_service.dart';
 import '../services/usuario_service.dart';
-import '../screens/product_detail_screen.dart';
 
 class HomeConsumer extends StatelessWidget {
   final ProductoService productoService;
