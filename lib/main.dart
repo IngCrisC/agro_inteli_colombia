@@ -12,18 +12,14 @@ import 'package:agro_inteli_colombia/services/usuario_service.dart';
 import 'package:agro_inteli_colombia/services/producto_service.dart';
 import 'package:agro_inteli_colombia/screens/add_product.dart';
 import 'package:agro_inteli_colombia/screens/home_farmer.dart';
+import 'package:provider/provider.dart';
+import 'package:agro_inteli_colombia/screens/order.dart';
 
 void main() {
   final UsuariotService usuarioService = UsuariotService();
   final ProductoService productoService = ProductoService(usuarioService);
 
-  WidgetsFlutterBinding
-      .ensureInitialized();
-
-  runApp(MainApp(
-    usuarioService: usuarioService,
-    productoService: productoService,
-  ));
+  WidgetsFlutterBinding.ensureInitialized();
 }
 
 class MainApp extends StatelessWidget {
@@ -49,6 +45,7 @@ class MainApp extends StatelessWidget {
         Routes.geoMap: (context) => GeoMapScreen(),
         Routes.addProduct: (context) => AddProductScreen(),
         Routes.homeFarmer: (context) => HomeFarmer(),
+        Routes.order: (context) => OrderScreen(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == '/inicio') {

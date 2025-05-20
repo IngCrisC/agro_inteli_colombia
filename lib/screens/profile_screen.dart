@@ -15,7 +15,7 @@ class ProfileScreen extends StatelessWidget {
         selectedItemColor: AppColors.secondaryColor,
         onTap: (index) {
           if (index == 0) {
-            Navigator.pushNamed(context, '/Home');
+            Navigator.pushNamed(context, '/HomeConsumidor');
           } else if (index == 1) {
             Navigator.pushNamed(context, '/cart');
           } else if (index == 2) {

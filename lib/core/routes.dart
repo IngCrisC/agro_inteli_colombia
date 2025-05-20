@@ -6,5 +6,7 @@ class Routes {
   static const String HomeC = "/HomeConsumidor";
   static const String geoMap = '/map';
   static const String addProduct = "/addProduct";
-  static const String homeFarmer = "/HomeFarmer";
+  static const String homeFarmer = "/homeFarmer";
+  static const String shopingCart = "/shoppingCart";
+  static const String order = "/order";
 }

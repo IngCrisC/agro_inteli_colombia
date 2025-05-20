@@ -87,11 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
           if (user.rol == 'consumidor') {
             Navigator.of(context).pushReplacementNamed(Routes.HomeC);
           } else if (user.rol == 'agricultor') {
-            // Navigator.of(context).pushReplacementNamed(Routes.HomeA);
-            print('Login de agricultor exitoso. Navegar a HomeA');
-            // Mantengo la navegación a HomeC para que compiles si Routes.HomeA no existe
-            Navigator.of(context).pushReplacementNamed(
-                Routes.HomeC); // TODO: Cambiar a Routes.HomeA
+            Navigator.of(context).pushReplacementNamed(Routes.homeFarmer);
           } else {
             // Rol desconocido o no manejado
             _loginMessage = 'Login exitoso, pero rol desconocido: ${user.rol}';

@@ -132,7 +132,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
           if (index == 0) {
             Navigator.pushNamed(context, '/Home');
           } else if (index == 1) {
-            Navigator.pushNamed(context, '/cart');
+            Navigator.pushNamed(context, '/shoppingCart');
           } else if (index == 2) {
             Navigator.pushNamed(context, '/profile');
           }

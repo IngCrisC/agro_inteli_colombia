@@ -5,7 +5,7 @@ class Producto {
   final String agricultorId;
   String nombre;
   String unidadMedida;
-  int precioUnidad;
+  String precioUnidad;
   int cantidad;
   String descripcion;
   String categoria;
@@ -30,7 +30,7 @@ class Producto {
     String? agricultorId,
     String? nombre,
     String? unidadMedida, // Comentario: Añadido
-    int? precioUnidad, // Comentario: Nombre y tipo cambiados
+    String? precioUnidad, // Comentario: Nombre y tipo cambiados
     int? cantidad, // Comentario: Nombre cambiado
     String? descripcion,
     String? categoria, // Comentario: Añadido

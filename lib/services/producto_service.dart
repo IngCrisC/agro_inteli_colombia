@@ -31,7 +31,7 @@ class ProductoService {
         agricultor.id, // agricultorId
         'Tomates Rojiros', // nombre
         'Kilogramo', // Comentario: unidadMedida (nuevo)
-        5500, // Comentario: precioUnidad (nombre y tipo cambiados, valor de ejemplo en COP)
+        "5500", // Comentario: precioUnidad (nombre y tipo cambiados, valor de ejemplo en COP)
         100, // Comentario: cantidad (nombre cambiado)
         'Tomates frescos y orgánicos, cultivados localmente.', // descripcion (actualizada)
         'Vegetales', // Comentario: categoria (nuevo)
@@ -42,7 +42,7 @@ class ProductoService {
         agricultor.id, // agricultorId
         'Papas Criollas', // nombre
         'Kilogramo', // Comentario: unidadMedida (nuevo)
-        7800, // Comentario: precioUnidad (nombre y tipo cambiados, valor de ejemplo en COP)
+        "7800", // Comentario: precioUnidad (nombre y tipo cambiados, valor de ejemplo en COP)
         150, // Comentario: cantidad (nombre cambiado)
         'Papas criollas pequeñas y sabrosas, ideales para freír.', // descripcion (actualizada)
         'Tuberculos', // Comentario: categoria (nuevo)
@@ -67,7 +67,7 @@ class ProductoService {
       String agricultorId,
       String nombre,
       String unidadMedida, // Comentario: Nuevo parámetro
-      int precioUnidad, // Comentario: Nombre y tipo cambiados
+      String precioUnidad, // Comentario: Nombre y tipo cambiados
       int cantidad, // Comentario: Nombre cambiado
       String descripcion,
       String categoria, // Comentario: Nuevo parámetro
@@ -128,7 +128,7 @@ class ProductoService {
   bool updateProducto(String id,
       {String? nombre,
       String? unidadMedida, // Comentario: Añadido
-      int? precioUnidad, // Comentario: Nombre y tipo cambiados
+      String? precioUnidad, // Comentario: Nombre y tipo cambiados
       int? cantidad, // Comentario: Nombre cambiado
       String? descripcion,
       String? categoria, // Comentario: Añadido

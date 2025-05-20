@@ -15,7 +15,7 @@ class HomeFarmer extends StatelessWidget {
           if (index == 0) {
             Navigator.pushNamed(context, '/Home');
           } else if (index == 1) {
-            Navigator.pushNamed(context, '/cart');
+            Navigator.pushNamed(context, '/order');
           } else if (index == 2) {
             Navigator.pushNamed(context, '/profile');
           }
@@ -48,7 +48,7 @@ class HomeFarmer extends StatelessWidget {
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.of(context)
-                              .pushReplacementNamed(Routes.HomeC);
+                              .pushReplacementNamed(Routes.addProduct);
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.secondaryColor,
