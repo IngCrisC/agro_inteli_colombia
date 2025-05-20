@@ -1,23 +1,20 @@
-// lib/models/usuario.dart
 import 'package:uuid/uuid.dart';
 
-// Clase base para Consumidor y Agricultor
 abstract class Usuario {
   final String id;
   String nombre;
-  String
-      telefono; // Mantenemos el teléfono como dato del usuario, pero NO para login/unicidad
-  String correo; // <-- Nuevo campo usado para login y unicidad
+  String telefono;
+  String correo;
   String departamento;
   String ciudad;
   String direccion;
-  String contrasenia; // !!! MUY INSEGURO EN TEXTO PLANO !!!
+  String contrasenia;
 
   Usuario({
     String? id,
     required this.nombre,
     required this.telefono,
-    required this.correo, // <-- Requerido en el constructor
+    required this.correo,
     required this.departamento,
     required this.ciudad,
     required this.direccion,
@@ -30,7 +27,7 @@ abstract class Usuario {
     String? id,
     String? nombre,
     String? telefono,
-    String? correo, // <-- Incluido en copyWith
+    String? correo,
     String? departamento,
     String? ciudad,
     String? direccion,

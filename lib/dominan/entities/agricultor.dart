@@ -1,5 +1,4 @@
-// lib/models/agricultor.dart
-import 'usuario.dart'; // Importa la clase base
+import 'usuario.dart';
 
 class Agricultor extends Usuario {
   String nombreFinca;
@@ -8,7 +7,7 @@ class Agricultor extends Usuario {
     String? id,
     required String nombre,
     required String telefono,
-    required String correo, // <-- Recibe correo
+    required String correo,
     required String departamento,
     required String ciudad,
     required String direccion,
@@ -18,7 +17,7 @@ class Agricultor extends Usuario {
           id: id,
           nombre: nombre,
           telefono: telefono,
-          correo: correo, // <-- Pasa correo al constructor base
+          correo: correo,
           departamento: departamento,
           ciudad: ciudad,
           direccion: direccion,
@@ -33,7 +32,7 @@ class Agricultor extends Usuario {
     String? id,
     String? nombre,
     String? telefono,
-    String? correo, // <-- Incluido en copyWith
+    String? correo,
     String? departamento,
     String? ciudad,
     String? direccion,
@@ -44,7 +43,7 @@ class Agricultor extends Usuario {
       id: id ?? this.id,
       nombre: nombre ?? this.nombre,
       telefono: telefono ?? this.telefono,
-      correo: correo ?? this.correo, // <-- Copia correo
+      correo: correo ?? this.correo,
       departamento: departamento ?? this.departamento,
       ciudad: ciudad ?? this.ciudad,
       direccion: direccion ?? this.direccion,

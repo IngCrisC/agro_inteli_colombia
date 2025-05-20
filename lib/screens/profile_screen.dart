@@ -2,12 +2,41 @@ import 'package:flutter/material.dart';
 import '../../core/routes.dart';
 import '../../core/colors.dart';
 import '../../core/string.dart';
+import '../services/usuario_service.dart';
+import '../dominan/entities/usuario.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  final UsuariotService usuarioService;
+
+  const ProfileScreen({Key? key, required this.usuarioService})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final Usuario? currentUser = usuarioService.currentUser;
+
+    if (currentUser == null) {
+      return Scaffold(
+        backgroundColor: AppColors.background,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('No hay usuario logueado',
+                  style: TextStyle(fontSize: 18, color: Colors.black54)),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushReplacementNamed(context, Routes.login);
+                },
+                child: Text('Ir a Iniciar Sesión'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: AppColors.background,
       bottomNavigationBar: BottomNavigationBar(
@@ -15,11 +44,11 @@ class ProfileScreen extends StatelessWidget {
         selectedItemColor: AppColors.secondaryColor,
         onTap: (index) {
           if (index == 0) {
-            Navigator.pushNamed(context, '/Home');
+            Navigator.pushNamed(context, Routes.HomeC);
           } else if (index == 1) {
-            Navigator.pushNamed(context, '/cart');
+            Navigator.pushNamed(context, Routes.cartDetail);
           } else if (index == 2) {
-            Navigator.pushNamed(context, '/profile');
+            Navigator.pushNamed(context, Routes.profile);
           }
         },
         items: const [
@@ -56,19 +85,19 @@ class ProfileScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Correo: carlos@gmail.com',
+                  'Correo: ${currentUser.correo}',
                   style: TextStyle(
                     fontSize: 15,
                   ),
                 ),
                 Text(
-                  'Teléfono: 313505846',
+                  'Teléfono: ${currentUser.telefono}',
                   style: TextStyle(
                     fontSize: 15,
                   ),
                 ),
                 Text(
-                  'Dirección: calle 45, Bogotá Cundinamarca',
+                  'Dirección: ${currentUser.direccion},  ${currentUser.ciudad}, ${currentUser.departamento}',
                   style: TextStyle(
                     fontSize: 15,
                   ),
@@ -102,6 +131,31 @@ class ProfileScreen extends StatelessWidget {
                     )
                   ],
                 ),
+                const SizedBox(height: 10),
+                Row(children: [
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () async {
+                        final result =
+                            await Navigator.pushNamed(context, Routes.geoMap);
+
+                        if (result != null && result is Map<String, double>) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Ubicación seleccionada: ${result['latitude']?.toStringAsFixed(6)}, ${result['longitude']?.toStringAsFixed(6)}',
+                              ),
+                              backgroundColor: Colors.green,
+                              duration: const Duration(seconds: 5),
+                            ),
+                          );
+                        }
+                      },
+                      icon: const Icon(Icons.map),
+                      label: const Text('Seleccionar ubicación'),
+                    ),
+                  ),
+                ]),
                 const SizedBox(height: 10),
                 Row(
                   children: [

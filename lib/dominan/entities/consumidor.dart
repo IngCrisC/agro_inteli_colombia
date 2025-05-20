@@ -30,7 +30,7 @@ class Consumidor extends Usuario {
     String? id,
     String? nombre,
     String? telefono,
-    String? correo, // <-- Incluido en copyWith
+    String? correo,
     String? departamento,
     String? ciudad,
     String? direccion,
@@ -40,7 +40,7 @@ class Consumidor extends Usuario {
       id: id ?? this.id,
       nombre: nombre ?? this.nombre,
       telefono: telefono ?? this.telefono,
-      correo: correo ?? this.correo, // <-- Copia correo
+      correo: correo ?? this.correo,
       departamento: departamento ?? this.departamento,
       ciudad: ciudad ?? this.ciudad,
       direccion: direccion ?? this.direccion,

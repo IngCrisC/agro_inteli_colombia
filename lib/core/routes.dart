@@ -7,4 +7,6 @@ class Routes {
   static const String geoMap = '/map';
   static const String addProduct = "/addProduct";
   static const String homeFarmer = "/HomeFarmer";
+  static const String productDetail = '/productDetail';
+  static const String cartDetail = '/cartDetail';
 }

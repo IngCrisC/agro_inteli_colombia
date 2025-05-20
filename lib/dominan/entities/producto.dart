@@ -29,58 +29,55 @@ class Producto {
     String? id,
     String? agricultorId,
     String? nombre,
-    String? unidadMedida, // Comentario: Añadido
-    int? precioUnidad, // Comentario: Nombre y tipo cambiados
-    int? cantidad, // Comentario: Nombre cambiado
+    String? unidadMedida,
+    int? precioUnidad,
+    int? cantidad,
     String? descripcion,
-    String? categoria, // Comentario: Añadido
-    String? imagen, // Comentario: Nombre cambiado
-    bool? estado, // Comentario: Añadido
+    String? categoria,
+    String? imagen,
+    bool? estado,
   }) {
     return Producto(
       id: id ?? this.id,
       agricultorId: agricultorId ?? this.agricultorId,
       nombre: nombre ?? this.nombre,
-      unidadMedida: unidadMedida ?? this.unidadMedida, // Comentario: Añadido
-      precioUnidad: precioUnidad ??
-          this.precioUnidad, // Comentario: Nombre y tipo cambiados
-      cantidad: cantidad ?? this.cantidad, // Comentario: Nombre cambiado
+      unidadMedida: unidadMedida ?? this.unidadMedida,
+      precioUnidad: precioUnidad ?? this.precioUnidad,
+      cantidad: cantidad ?? this.cantidad,
       descripcion: descripcion ?? this.descripcion,
-      categoria: categoria ?? this.categoria, // Comentario: Añadido
-      imagen: imagen ?? this.imagen, // Comentario: Nombre cambiado
-      estado: estado ?? this.estado, // Comentario: Añadido
+      categoria: categoria ?? this.categoria,
+      imagen: imagen ?? this.imagen,
+      estado: estado ?? this.estado,
     );
   }
 
-  // Comentario: Método toMap actualizado para incluir todos los campos
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'agricultorId': agricultorId,
       'nombre': nombre,
-      'unidadMedida': unidadMedida, // Comentario: Añadido
-      'precioUnidad': precioUnidad, // Comentario: Nombre cambiado
-      'cantidad': cantidad, // Comentario: Nombre cambiado
+      'unidadMedida': unidadMedida,
+      'precioUnidad': precioUnidad,
+      'cantidad': cantidad,
       'descripcion': descripcion,
-      'categoria': categoria, // Comentario: Añadido
-      'imagen': imagen, // Comentario: Nombre cambiado
-      'estado': estado, // Comentario: Añadido
+      'categoria': categoria,
+      'imagen': imagen,
+      'estado': estado,
     };
   }
 
-  // Comentario: Método fromMap actualizado para incluir todos los campos
   factory Producto.fromMap(Map<String, dynamic> map) {
     return Producto(
       id: map['id'],
       agricultorId: map['agricultorId'],
       nombre: map['nombre'],
-      unidadMedida: map['unidadMedida'], // Comentario: Añadido
-      precioUnidad: map['precioUnidad'], // Comentario: Nombre cambiado
-      cantidad: map['cantidad'], // Comentario: Nombre cambiado
+      unidadMedida: map['unidadMedida'],
+      precioUnidad: map['precioUnidad'],
+      cantidad: map['cantidad'],
       descripcion: map['descripcion'],
-      categoria: map['categoria'], // Comentario: Añadido
-      imagen: map['imagen'], // Comentario: Nombre cambiado
-      estado: map['estado'], // Comentario: Añadido
+      categoria: map['categoria'],
+      imagen: map['imagen'],
+      estado: map['estado'],
     );
   }
 }

@@ -53,15 +53,12 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formLogin = GlobalKey<FormState>();
   bool _isPasswordVisible = false;
 
-  // Comentario: Controladores para obtener el texto de los campos
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  // Comentario: Variable para mostrar mensajes de login
   String _loginMessage = '';
-  // Comentario: Variable para guardar el usuario logueado (opcional)
   Usuario? _loggedInUser;
-  // Comentario: Limpiar controladores al destruir el widget
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -87,17 +84,11 @@ class _LoginScreenState extends State<LoginScreen> {
           if (user.rol == 'consumidor') {
             Navigator.of(context).pushReplacementNamed(Routes.HomeC);
           } else if (user.rol == 'agricultor') {
-            // Navigator.of(context).pushReplacementNamed(Routes.HomeA);
             print('Login de agricultor exitoso. Navegar a HomeA');
-            // Mantengo la navegación a HomeC para que compiles si Routes.HomeA no existe
-            Navigator.of(context).pushReplacementNamed(
-                Routes.HomeC); // TODO: Cambiar a Routes.HomeA
+            Navigator.of(context).pushReplacementNamed(Routes.HomeC);
           } else {
-            // Rol desconocido o no manejado
             _loginMessage = 'Login exitoso, pero rol desconocido: ${user.rol}';
-            // Decide a dónde navegar para roles desconocidos
-            Navigator.of(context).pushReplacementNamed(
-                Routes.HomeC); // TODO: Manejar otros roles
+            Navigator.of(context).pushReplacementNamed(Routes.HomeC);
           }
         } else {
           _loginMessage = 'Correo o contraseña incorrectos.';
@@ -117,14 +108,11 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
         backgroundColor: AppColors.background,
         body: SingleChildScrollView(
-          // Comentario: Aplicamos el padding DENTRO del SingleChildScrollView
           padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
           child: Center(
               child: Column(
-                  mainAxisAlignment:
-                      MainAxisAlignment.start, // alineacion vertical
-                  crossAxisAlignment:
-                      CrossAxisAlignment.stretch, // alineacion horizontal
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                 const SizedBox(height: 20),
                 Image.asset(

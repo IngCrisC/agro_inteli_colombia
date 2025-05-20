@@ -70,7 +70,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
         SnackBar(content: Text('Producto guardado localmente')),
       );
 
-      // Opcional: limpiar los campos
       _nameProductController.clear();
       _unitOfMeasurementController.clear();
       _pricePerUnitController.clear();
@@ -107,7 +106,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
     print("Imagen guardada localmente en: $savedImagePath");
   }
 
-  // Este dispose se usa para liberar la memoria que usaron los controladores, la memoria se libera cuando la vista se cierra
   @override
   void dispose() {
     _nameProductController.dispose();
@@ -123,7 +121,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Scaffold es el que organiza elementos en una estructura
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: AppColors.background,
@@ -145,8 +142,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(30.0),
-
-        // Form es un contenedor que fluter reconoce como formulario, al envolver los elementos dentro de este contenedor se podran usar metodos especiales para un formulario.
         child: Form(
           key: _formKey,
           child: ListView(
@@ -170,7 +165,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 ),
               ),
               TextFormField(
-                // Campo para nombre
                 controller: _nameProductController,
                 decoration: const InputDecoration(
                   hintStyle: TextStyle(
@@ -188,9 +182,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     width: 2,
                   )),
                 ),
-
                 validator: (value) =>
-                    // Si el campo es valido retorna ingrese su nombre si no entonces retorna null
                     value!.isEmpty ? 'Ingrese el nombre del producto' : null,
               ),
               const SizedBox(height: 12),
@@ -203,7 +195,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 ),
               ),
               TextFormField(
-                // Campo para nombre
                 controller: _unitOfMeasurementController,
                 decoration: const InputDecoration(
                   hintStyle: TextStyle(
@@ -221,9 +212,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     width: 2,
                   )),
                 ),
-
                 validator: (value) =>
-                    // Si el campo no es valido retorna ingrese unidad de medida si no entonces retorna null
                     value!.isEmpty ? 'Ingrese unidad de medida' : null,
               ),
               const SizedBox(height: 12),
@@ -236,7 +225,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 ),
               ),
               TextFormField(
-                // Campo para precio
                 controller: _pricePerUnitController,
                 decoration: const InputDecoration(
                   hintStyle: TextStyle(
@@ -255,7 +243,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   )),
                 ),
                 validator: (value) =>
-                    // Si el campo es valido retorna ingrese el precio de su producto si no retorna null
                     value!.isEmpty ? 'Ingrese el precio de su producto' : null,
               ),
               const SizedBox(height: 12),
@@ -268,7 +255,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 ),
               ),
               TextFormField(
-                // Campo para descripcion
                 controller: _descriptionController,
                 decoration: const InputDecoration(
                   hintStyle: TextStyle(
@@ -286,11 +272,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     width: 2,
                   )),
                 ),
-                validator: (value) =>
-                    // Si el campo no es valido retorna Ingrese la cantidad de su producto si no entonces retorna null
-                    value!.isEmpty
-                        ? 'Ingrese la cantidad de su producto'
-                        : null,
+                validator: (value) => value!.isEmpty
+                    ? 'Ingrese la cantidad de su producto'
+                    : null,
               ),
               const SizedBox(height: 12),
               // Campo para descripción
@@ -327,7 +311,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         : null,
               ),
               const SizedBox(height: 12),
-              // Texto imagen
               Text(
                 AppStrings.image,
                 textAlign: TextAlign.left,

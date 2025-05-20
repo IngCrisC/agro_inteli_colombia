@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:badges/badges.dart' as badges;
 import '../../core/routes.dart';
 import '../../core/colors.dart';
-import '../../core/string.dart';
+import '../dominan/entities/producto.dart';
+import '../services/producto_service.dart';
+import '../services/usuario_service.dart';
+import '../screens/product_detail_screen.dart';
 
 class HomeConsumer extends StatelessWidget {
+  final ProductoService productoService;
+  final UsuariotService usuarioService;
+
+  const HomeConsumer(
+      {Key? key, required this.productoService, required this.usuarioService})
+      : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,9 +22,9 @@ class HomeConsumer extends StatelessWidget {
         selectedItemColor: AppColors.secondaryColor,
         onTap: (index) {
           if (index == 0) {
-            Navigator.pushNamed(context, '/Home');
+            Navigator.pushNamed(context, Routes.HomeC);
           } else if (index == 1) {
-            Navigator.pushNamed(context, '/cart');
+            Navigator.pushNamed(context, Routes.cartDetail);
           } else if (index == 2) {
             Navigator.pushNamed(context, '/profile');
           }
@@ -58,7 +67,6 @@ class HomeConsumer extends StatelessWidget {
                   ),
                 ),
 
-                //Se llama la clase del slide de las categorias
                 CategoriasWidget(),
 
                 //Productos
@@ -75,7 +83,10 @@ class HomeConsumer extends StatelessWidget {
                   ),
                 ),
 
-                ProductosWidget(), //Clase para los slide
+                ProductosWidget(
+                  productoService: productoService,
+                  usuarioService: usuarioService,
+                ),
 
                 //Titulo de la siguiente fila de slides
                 Container(
@@ -90,8 +101,10 @@ class HomeConsumer extends StatelessWidget {
                     ),
                   ),
                 ),
-                //Se llama la clase de los slides
-                ProductosWidget(),
+                ProductosWidget(
+                  productoService: productoService,
+                  usuarioService: usuarioService,
+                ),
               ],
             ),
           ),
@@ -101,7 +114,6 @@ class HomeConsumer extends StatelessWidget {
   }
 }
 
-//Header y cuadro de busqueda
 class HomeAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -115,38 +127,35 @@ class HomeAppBar extends StatelessWidget {
             width: 50,
             height: 50,
           ),
-          Padding(
-              padding: EdgeInsets.only(
-                left: 0,
-              ),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(left: 15.0, right: 15.0),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    margin: EdgeInsets.symmetric(
-                      horizontal: 15,
-                    ),
                     padding: EdgeInsets.symmetric(
                       horizontal: 15,
                     ),
                     height: 50,
                     decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 184, 178, 178),
+                      color: AppColors.grey,
                       borderRadius: BorderRadius.circular(30),
                     ),
-                    //Texto de la Barra de buscar
                     child: Row(
                       children: [
-                        Container(
-                          margin: EdgeInsets.only(left: 0),
-                          height: 50,
-                          width: 200,
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: "Buscar producto...",
+                        Expanded(
+                          child: Container(
+                            height: 50,
+                            child: TextFormField(
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "Buscar producto...",
+                              ),
                             ),
                           ),
                         ),
+                        // Icono de búsqueda
                         Icon(
                           Icons.search,
                           size: 25,
@@ -155,8 +164,9 @@ class HomeAppBar extends StatelessWidget {
                     ),
                   ),
                 ],
-              )),
-          Spacer(),
+              ),
+            ),
+          ),
           Badge(
             child: InkWell(
               onTap: () {
@@ -167,7 +177,7 @@ class HomeAppBar extends StatelessWidget {
                 size: 16,
               ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -194,7 +204,7 @@ class CategoriasWidget extends StatelessWidget {
             margin: EdgeInsets.symmetric(horizontal: 10),
             padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 184, 178, 178),
+              color: AppColors.grey,
               borderRadius: BorderRadius.circular(20),
             ),
             child: Row(
@@ -222,94 +232,104 @@ class CategoriasWidget extends StatelessWidget {
   }
 }
 
-class ProductosWidget extends StatelessWidget {
-  final List<Map<String, String>> productos = [
-    {
-      "nombre": "Zanahoria",
-      "imagen": "Zanahoria.jpg",
-      "cantidad": "20 Cargas Disponibles",
-      "precio": "\$110.000 Unid."
-    },
-    {
-      "nombre": "Papa",
-      "imagen": "Papa.jpg",
-      "cantidad": "200 Bultos Disponibles",
-      "precio": "\$90.000 Unid."
-    },
-    {
-      "nombre": "Remolacha",
-      "imagen": "Remolacha.jpg",
-      "cantidad": "400 cargas disponibles",
-      "precio": "\$70.000 Unid."
-    },
-    {
-      "nombre": "Cebolla Roja",
-      "imagen": "Cebollaroja.jpg",
-      "cantidad": "150 cargas disponibles",
-      "precio": "\$85.000 Unid."
-    },
-    {
-      "nombre": "Yuca",
-      "imagen": "Yuca.jpg",
-      "cantidad": "100 bultos disponibles",
-      "precio": "\$95.000 Unid."
-    },
-    {
-      "nombre": "Rábano",
-      "imagen": "Rabano.jpg",
-      "cantidad": "50 cargas disponibles",
-      "precio": "\$60.000 Unid."
-    },
-  ];
+class ProductosWidget extends StatefulWidget {
+  final ProductoService productoService;
+  final UsuariotService usuarioService;
+
+  const ProductosWidget(
+      {Key? key, required this.productoService, required this.usuarioService})
+      : super(key: key);
+
+  @override
+  State<ProductosWidget> createState() => _ProductosWidgetState();
+}
+
+class _ProductosWidgetState extends State<ProductosWidget> {
+  List<Producto> _productos = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProductos();
+  }
+
+  void _loadProductos() {
+    final fetchedProductos = widget.productoService.getAllProductos();
+    setState(() {
+      _productos = fetchedProductos;
+      _isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (_productos.isEmpty) {
+      return const Center(child: Text('No hay productos disponibles.'));
+    }
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
-        children: productos.map((producto) {
-          return Container(
-            margin: EdgeInsets.symmetric(horizontal: 10),
-            padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-            decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 184, 178, 178),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Image.asset(
-                  "assets/icons/${producto['imagen']}",
-                  width: 180,
-                  height: 180,
-                  fit: BoxFit.cover,
-                ),
-                SizedBox(height: 10),
-                Text(
-                  producto['nombre']!,
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
+        children: _productos.map((producto) {
+          return InkWell(
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                Routes.productDetail,
+                arguments: {
+                  'product': producto,
+                  'usuarioService': widget.usuarioService,
+                },
+              );
+            },
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 10),
+              padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+              decoration: BoxDecoration(
+                color: AppColors.grey,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Image.asset(
+                    producto.imagen,
+                    width: 180,
+                    height: 180,
+                    fit: BoxFit.cover,
                   ),
-                ),
-                Text(
-                  producto['cantidad']!,
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: Colors.blueGrey,
+                  SizedBox(height: 10),
+                  Text(
+                    producto.nombre,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                SizedBox(height: 10),
-                Text(
-                  producto['precio']!,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.green,
+                  Text(
+                    '${producto.cantidad} - ${producto.unidadMedida}s disponibles',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.blueGrey,
+                    ),
                   ),
-                ),
-              ],
+                  SizedBox(height: 10),
+                  Text(
+                    '\$ ' + '${producto.precioUnidad} unidad',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green,
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         }).toList(),

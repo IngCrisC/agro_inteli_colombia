@@ -3,8 +3,6 @@ import '../dominan/entities/usuario.dart';
 import '../dominan/entities/consumidor.dart';
 import '../dominan/entities/agricultor.dart';
 
-// No usamos ChangeNotifier
-// Importamos firstWhereOrNull si no usamos collection package
 extension ListExtensions<T> on List<T> {
   T? firstWhereOrNull(bool Function(T element) test) {
     for (var element in this) {
@@ -19,6 +17,7 @@ extension ListExtensions<T> on List<T> {
 class UsuariotService {
   final List<Consumidor> _consumidores = [];
   final List<Agricultor> _agricultores = [];
+  Usuario? _currentUser;
 
   UsuariotService() {
     _addInitialData();
@@ -44,16 +43,10 @@ class UsuariotService {
       contrasenia: 'agricultor',
       nombreFinca: 'La Huerta Feliz',
     );
-
-    print('--- Datos iniciales de usuarios agregados ---');
-    print('Consumidores: ${_consumidores.length}');
-    print('Agricultores: ${_agricultores.length}');
-    print('---');
   }
 
-  // --- Métodos de Gestión de Usuarios ---
+  // --- Métodos de usuario ---
 
-  // Verifica si un correo ya está registrado en CUALQUIERA de las listas
   bool _correoExiste(String correo) {
     return _consumidores
             .any((c) => c.correo.toLowerCase() == correo.toLowerCase()) ||
@@ -61,7 +54,7 @@ class UsuariotService {
             .any((a) => a.correo.toLowerCase() == correo.toLowerCase());
   }
 
-  // 1. Registrar Consumidor
+  // Registro de consumidor
   Consumidor? registrarConsumidor({
     required String nombre,
     required String telefono,
@@ -72,7 +65,6 @@ class UsuariotService {
     required String contrasenia,
   }) {
     if (_correoExiste(correo)) {
-      // <-- Validamos por correo
       print('-> UsuarioService: Error - Correo $correo ya registrado.');
       return null;
     }
@@ -80,11 +72,11 @@ class UsuariotService {
     final nuevoConsumidor = Consumidor(
       nombre: nombre,
       telefono: telefono,
-      correo: correo, // <-- Usamos correo
+      correo: correo,
       departamento: departamento,
       ciudad: ciudad,
       direccion: direccion,
-      contrasenia: contrasenia, // !!! INSEGURO !!!
+      contrasenia: contrasenia,
     );
     _consumidores.add(nuevoConsumidor);
     print(
@@ -92,11 +84,11 @@ class UsuariotService {
     return nuevoConsumidor;
   }
 
-  // 1. Registrar Agricultor
+  // Registro de agricultor
   Agricultor? registrarAgricultor({
     required String nombre,
     required String telefono,
-    required String correo, // <-- Usamos correo
+    required String correo,
     required String departamento,
     required String ciudad,
     required String direccion,
@@ -104,7 +96,6 @@ class UsuariotService {
     required String nombreFinca,
   }) {
     if (_correoExiste(correo)) {
-      // <-- Validamos por correo
       print('-> UsuarioService: Error - Correo $correo ya registrado.');
       return null;
     }
@@ -112,11 +103,11 @@ class UsuariotService {
     final nuevoAgricultor = Agricultor(
       nombre: nombre,
       telefono: telefono,
-      correo: correo, // <-- Usamos correo
+      correo: correo,
       departamento: departamento,
       ciudad: ciudad,
       direccion: direccion,
-      contrasenia: contrasenia, // !!! INSEGURO !!!
+      contrasenia: contrasenia,
       nombreFinca: nombreFinca,
     );
     _agricultores.add(nuevoAgricultor);
@@ -125,18 +116,16 @@ class UsuariotService {
     return nuevoAgricultor;
   }
 
-  // 2. Iniciar Sesión
-  // Ahora usa correo y contrasenia
+  // Login
   Usuario? iniciarSesion({
-    required String correo, // <-- Usamos correo
+    required String correo,
     required String contrasenia,
   }) {
-    // Buscar en consumidores por correo
     final consumidor = _consumidores.firstWhereOrNull(
         (c) => c.correo.toLowerCase() == correo.toLowerCase());
     if (consumidor != null) {
       if (consumidor.contrasenia == contrasenia) {
-        // !!! INSEGURO !!!
+        _currentUser = consumidor;
         print(
             '-> UsuarioService: Inicio de sesión exitoso para Consumidor ${consumidor.nombre}.');
         return consumidor;
@@ -146,13 +135,11 @@ class UsuariotService {
         return null;
       }
     }
-
-    // Buscar en agricultores por correo si no se encontró como consumidor
     final agricultor = _agricultores.firstWhereOrNull(
         (a) => a.correo.toLowerCase() == correo.toLowerCase());
     if (agricultor != null) {
       if (agricultor.contrasenia == contrasenia) {
-        // !!! INSEGURO !!!
+        _currentUser = agricultor;
         print(
             '-> UsuarioService: Inicio de sesión exitoso para Agricultor ${agricultor.nombre}.');
         return agricultor;
@@ -162,18 +149,16 @@ class UsuariotService {
         return null;
       }
     }
-
-    // Si no se encontró en ninguna lista por correo
     print('-> UsuarioService: Error - Correo $correo no encontrado.');
     return null;
   }
 
-  // 3. Editar Consumidor
+  // Modificacion del consumidor
   bool editarConsumidor(
     String id, {
     String? nombre,
     String? telefono,
-    String? correo, // <-- Permitir cambiar correo
+    String? correo,
     String? departamento,
     String? ciudad,
     String? direccion,
@@ -181,7 +166,6 @@ class UsuariotService {
   }) {
     final index = _consumidores.indexWhere((c) => c.id == id);
     if (index != -1) {
-      // Validar si el nuevo correo (si se cambia) ya existe para otro usuario
       if (correo != null &&
           correo.toLowerCase() != _consumidores[index].correo.toLowerCase() &&
           _correoExiste(correo)) {
@@ -193,7 +177,7 @@ class UsuariotService {
       _consumidores[index] = _consumidores[index].copyWith(
         nombre: nombre,
         telefono: telefono,
-        correo: correo, // <-- Actualizar correo
+        correo: correo,
         departamento: departamento,
         ciudad: ciudad,
         direccion: direccion,
@@ -207,12 +191,12 @@ class UsuariotService {
     return false;
   }
 
-  // 3. Editar Agricultor
+  // Edicion del agricultor
   bool editarAgricultor(
     String id, {
     String? nombre,
     String? telefono,
-    String? correo, // <-- Permitir cambiar correo
+    String? correo,
     String? departamento,
     String? ciudad,
     String? direccion,
@@ -221,7 +205,6 @@ class UsuariotService {
   }) {
     final index = _agricultores.indexWhere((a) => a.id == id);
     if (index != -1) {
-      // Validar si el nuevo correo (si se cambia) ya existe para otro usuario
       if (correo != null &&
           correo.toLowerCase() != _agricultores[index].correo.toLowerCase() &&
           _correoExiste(correo)) {
@@ -233,7 +216,7 @@ class UsuariotService {
       _agricultores[index] = _agricultores[index].copyWith(
         nombre: nombre,
         telefono: telefono,
-        correo: correo, // <-- Actualizar correo
+        correo: correo,
         departamento: departamento,
         ciudad: ciudad,
         direccion: direccion,
@@ -248,27 +231,21 @@ class UsuariotService {
     return false;
   }
 
-  // --- Métodos Utiles Adicionales ---
-
-  // Obtener un usuario (sea Consumidor o Agricultor) por su ID
+  // buscar usuario
   Usuario? getUsuarioById(String id) {
-    // Busca en consumidores
     final consumidor = _consumidores.firstWhereOrNull((c) => c.id == id);
     if (consumidor != null) return consumidor;
 
-    // Si no es consumidor, buscar en agricultores
     final agricultor = _agricultores.firstWhereOrNull((a) => a.id == id);
     return agricultor;
   }
 
-  // Nuevo método para obtener un usuario por su correo
+  // busca usuario por correo
   Usuario? getUsuarioByCorreo(String correo) {
-    // Buscar en consumidores por correo
     final consumidor = _consumidores.firstWhereOrNull(
         (c) => c.correo.toLowerCase() == correo.toLowerCase());
     if (consumidor != null) return consumidor;
 
-    // Si no es consumidor, buscar en agricultores por correo
     final agricultor = _agricultores.firstWhereOrNull(
         (a) => a.correo.toLowerCase() == correo.toLowerCase());
     return agricultor;
@@ -278,10 +255,13 @@ class UsuariotService {
     return [..._consumidores, ..._agricultores];
   }
 
+// obtiener todos los consumidores
   List<Consumidor> getAllConsumidores() => List.from(_consumidores);
 
+// obtiener todos los agricultores
   List<Agricultor> getAllAgricultores() => List.from(_agricultores);
 
+// elimina a un usuario  por el id
   bool eliminarUsuario(String id) {
     final initialConsumidorLength = _consumidores.length;
     _consumidores.removeWhere((c) => c.id == id);
@@ -300,4 +280,6 @@ class UsuariotService {
     print('-> UsuarioService: Usuario con ID $id no encontrado para eliminar.');
     return false;
   }
+
+  Usuario? get currentUser => _currentUser;
 }
