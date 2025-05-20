@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:badges/badges.dart' as badges;
 import '../../core/routes.dart';
 import '../../core/colors.dart';
-import '../../core/string.dart';
-import '../services/producto_service.dart';
 import '../dominan/entities/producto.dart';
+import '../services/producto_service.dart';
+import '../services/usuario_service.dart';
 
 class HomeConsumer extends StatelessWidget {
   final ProductoService productoService;
-  const HomeConsumer({Key? key, required this.productoService})
+  final UsuariotService usuarioService;
+
+  const HomeConsumer(
+      {Key? key, required this.productoService, required this.usuarioService})
       : super(key: key);
 
   @override
@@ -19,9 +21,9 @@ class HomeConsumer extends StatelessWidget {
         selectedItemColor: AppColors.secondaryColor,
         onTap: (index) {
           if (index == 0) {
-            Navigator.pushNamed(context, '/HomeConsumidor');
+            Navigator.pushNamed(context, Routes.HomeC);
           } else if (index == 1) {
-            Navigator.pushNamed(context, '/cart');
+            Navigator.pushNamed(context, Routes.cartDetail);
           } else if (index == 2) {
             Navigator.pushNamed(context, '/profile');
           }
@@ -82,7 +84,9 @@ class HomeConsumer extends StatelessWidget {
                 ),
 
                 ProductosWidget(
-                    productoService: productoService), //Clase para los slide
+                  productoService: productoService,
+                  usuarioService: usuarioService,
+                ),
 
                 //Titulo de la siguiente fila de slides
                 Container(
@@ -97,8 +101,10 @@ class HomeConsumer extends StatelessWidget {
                     ),
                   ),
                 ),
-                //Se llama la clase de los slides
-                ProductosWidget(productoService: productoService),
+                ProductosWidget(
+                  productoService: productoService,
+                  usuarioService: usuarioService,
+                ),
               ],
             ),
           ),
@@ -123,19 +129,12 @@ class HomeAppBar extends StatelessWidget {
             height: 50,
           ),
           Expanded(
-            // Comentario: Envuelve el padding/columna de búsqueda en Expanded
             child: Padding(
-                padding: EdgeInsets.only(
-                  left: 0, // Ajusta si es necesario
-                ),
+              padding: EdgeInsets.only(left: 15.0, right: 15.0),
                 child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      // margin: EdgeInsets.symmetric( // Comentario: Margen horizontal puede ser redundante con el padding del padre
-                      //   horizontal: 15,
-                      // ),
-                      margin: EdgeInsets.only(
-                          left: 15, right: 15), // Comentario: Ajuste de margen
                       padding: EdgeInsets.symmetric(
                         horizontal: 15,
                       ),
@@ -144,17 +143,11 @@ class HomeAppBar extends StatelessWidget {
                         color: AppColors.grey,
                         borderRadius: BorderRadius.circular(30),
                       ),
-                      //Texto de la Barra de buscar
                       child: Row(
                         children: [
-                          // Comentario: Expanded para que el TextFormField tome el espacio disponible en el Row
                           Expanded(
-                            // Comentario: Envuelve TextFormField en Expanded
                             child: Container(
-                              // Comentario: Mantenemos el Container si tiene propósitos de layout
-                              // margin: EdgeInsets.only(left: 0), // Comentario: Este margen puede ser innecesario con Expanded
-                              height: 50, // Altura del Container
-                              // width: 100, // Comentario: Eliminamos width fijo para que Expanded funcione
+                            height: 50,
                               child: TextFormField(
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
@@ -163,6 +156,7 @@ class HomeAppBar extends StatelessWidget {
                               ),
                             ),
                           ),
+                        // Icono de búsqueda
                           Icon(
                             Icons.search,
                             size: 25,
@@ -171,7 +165,8 @@ class HomeAppBar extends StatelessWidget {
                       ),
                     ),
                   ],
-                )),
+              ),
+            ),
           ),
           Badge(
             child: InkWell(
@@ -183,7 +178,7 @@ class HomeAppBar extends StatelessWidget {
                 size: 16,
               ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -239,11 +234,11 @@ class CategoriasWidget extends StatelessWidget {
 }
 
 class ProductosWidget extends StatefulWidget {
-  // Comentario: Campo para recibir el ProductoService
   final ProductoService productoService;
+  final UsuariotService usuarioService;
 
-  // Comentario: Constructor que requiere el ProductoService
-  const ProductosWidget({Key? key, required this.productoService})
+  const ProductosWidget(
+      {Key? key, required this.productoService, required this.usuarioService})
       : super(key: key);
 
   @override
@@ -251,51 +246,49 @@ class ProductosWidget extends StatefulWidget {
 }
 
 class _ProductosWidgetState extends State<ProductosWidget> {
-  // Comentario: Lista para almacenar los productos obtenidos del servicio
   List<Producto> _productos = [];
-  // Comentario: Variable para indicar si se está cargando (opcional para UI)
   bool _isLoading = true;
 
-  // Comentario: Método que se llama al inicializar el widget
   @override
   void initState() {
     super.initState();
-    // Comentario: Llamar al método para cargar los productos
     _loadProductos();
   }
 
-  // Comentario: Método para cargar los productos del servicio
   void _loadProductos() {
-    // Comentario: Obtiene todos los productos del servicio
     final fetchedProductos = widget.productoService.getAllProductos();
-    // Comentario: Actualiza el estado del widget con los productos obtenidos
     setState(() {
       _productos = fetchedProductos;
-      _isLoading = false; // Comentario: La carga ha terminado
+      _isLoading = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // Comentario: Muestra un indicador de carga mientras se obtienen los productos
     if (_isLoading) {
-      return const Center(
-          child:
-              CircularProgressIndicator()); // Comentario: Muestra un spinner de carga
+      return const Center(child: CircularProgressIndicator());
     }
 
-    // Comentario: Si no hay productos, muestra un mensaje
     if (_productos.isEmpty) {
-      return const Center(
-          child: Text(
-              'No hay productos disponibles.')); // Comentario: Mensaje si la lista está vacía
+      return const Center(child: Text('No hay productos disponibles.'));
     }
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
         children: _productos.map((producto) {
-          return Container(
+          return InkWell(
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                Routes.productDetail,
+                arguments: {
+                  'product': producto,
+                  'usuarioService': widget.usuarioService,
+                },
+              );
+            },
+            child: Container(
             margin: EdgeInsets.symmetric(horizontal: 10),
             padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
             decoration: BoxDecoration(
@@ -321,7 +314,7 @@ class _ProductosWidgetState extends State<ProductosWidget> {
                   ),
                 ),
                 Text(
-                  '${producto.cantidad} - ${producto.unidadMedida}',
+                    '${producto.cantidad} - ${producto.unidadMedida}s disponibles',
                   style: TextStyle(
                     fontSize: 15,
                     color: Colors.blueGrey,
@@ -329,7 +322,7 @@ class _ProductosWidgetState extends State<ProductosWidget> {
                 ),
                 SizedBox(height: 10),
                 Text(
-                  '${producto.precioUnidad}',
+                    '\$ ' + '${producto.precioUnidad} unidad',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -337,6 +330,7 @@ class _ProductosWidgetState extends State<ProductosWidget> {
                   ),
                 ),
               ],
+              ),
             ),
           );
         }).toList(),
