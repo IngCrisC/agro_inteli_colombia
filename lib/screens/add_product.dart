@@ -127,11 +127,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
         selectedItemColor: AppColors.secondaryColor,
         onTap: (index) {
           if (index == 0) {
-            Navigator.pushNamed(context, '/Home');
+            Navigator.pushNamed(context, '/HomeFarmer');
           } else if (index == 1) {
-            Navigator.pushNamed(context, '/cart');
+            Navigator.pushNamed(context, '/order');
           } else if (index == 2) {
-            Navigator.pushNamed(context, '/profile');
+            Navigator.pushNamed(context, '');
           }
         },
         items: const [

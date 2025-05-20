@@ -53,6 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formLogin = GlobalKey<FormState>();
   bool _isPasswordVisible = false;
 
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -84,8 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
           if (user.rol == 'consumidor') {
             Navigator.of(context).pushReplacementNamed(Routes.HomeC);
           } else if (user.rol == 'agricultor') {
-            print('Login de agricultor exitoso. Navegar a HomeA');
-            Navigator.of(context).pushReplacementNamed(Routes.HomeC);
+            Navigator.of(context).pushReplacementNamed(Routes.homeFarmer);
           } else {
             _loginMessage = 'Login exitoso, pero rol desconocido: ${user.rol}';
             Navigator.of(context).pushReplacementNamed(Routes.HomeC);

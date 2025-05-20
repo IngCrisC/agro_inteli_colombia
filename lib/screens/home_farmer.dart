@@ -13,11 +13,11 @@ class HomeFarmer extends StatelessWidget {
         selectedItemColor: AppColors.secondaryColor,
         onTap: (index) {
           if (index == 0) {
-            Navigator.pushNamed(context, '/Home');
+            Navigator.pushNamed(context, '/HomeFarmer');
           } else if (index == 1) {
-            Navigator.pushNamed(context, '/cart');
+            Navigator.pushNamed(context, '/order');
           } else if (index == 2) {
-            Navigator.pushNamed(context, '/profile');
+            Navigator.pushNamed(context, '');
           }
         },
         items: const [
@@ -48,7 +48,7 @@ class HomeFarmer extends StatelessWidget {
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.of(context)
-                              .pushReplacementNamed(Routes.HomeC);
+                              .pushReplacementNamed(Routes.addProduct);
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.secondaryColor,
@@ -200,7 +200,7 @@ class ProductosWidget extends StatelessWidget {
             margin: EdgeInsets.symmetric(horizontal: 10),
             padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 184, 178, 178),
+              color: AppColors.grey,
               borderRadius: BorderRadius.circular(20),
             ),
             child: Column(

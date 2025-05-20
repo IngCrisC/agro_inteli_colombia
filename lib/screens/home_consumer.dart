@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../core/routes.dart';
 import '../../core/colors.dart';
 import '../dominan/entities/producto.dart';
@@ -25,7 +26,7 @@ class HomeConsumer extends StatelessWidget {
           } else if (index == 1) {
             Navigator.pushNamed(context, Routes.cartDetail);
           } else if (index == 2) {
-            Navigator.pushNamed(context, '/profile');
+            Navigator.pushNamed(context, Routes.profile);
           }
         },
         items: const [
@@ -88,6 +89,7 @@ class HomeConsumer extends StatelessWidget {
                   usuarioService: usuarioService,
                 ),
 
+
                 //Titulo de la siguiente fila de slides
                 Container(
                   alignment: Alignment.centerLeft,
@@ -105,6 +107,7 @@ class HomeConsumer extends StatelessWidget {
                   productoService: productoService,
                   usuarioService: usuarioService,
                 ),
+
               ],
             ),
           ),
@@ -167,6 +170,7 @@ class HomeAppBar extends StatelessWidget {
                 ],
               ),
             ),
+
           ),
           Badge(
             child: InkWell(
@@ -239,6 +243,7 @@ class ProductosWidget extends StatefulWidget {
 
   const ProductosWidget(
       {Key? key, required this.productoService, required this.usuarioService})
+
       : super(key: key);
 
   @override
@@ -331,6 +336,7 @@ class _ProductosWidgetState extends State<ProductosWidget> {
                   ),
                 ],
               ),
+
             ),
           );
         }).toList(),

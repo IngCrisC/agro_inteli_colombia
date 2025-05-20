@@ -1,5 +1,4 @@
 import 'package:agro_inteli_colombia/screens/Home_consumer.dart';
-import 'package:agro_inteli_colombia/screens/cart_product.dart';
 import 'package:flutter/material.dart';
 import 'package:agro_inteli_colombia/screens/splash_screen.dart';
 import 'package:agro_inteli_colombia/screens/record_screen.dart';
@@ -13,10 +12,12 @@ import 'package:agro_inteli_colombia/services/usuario_service.dart';
 import 'package:agro_inteli_colombia/services/producto_service.dart';
 import 'package:agro_inteli_colombia/screens/add_product.dart';
 import 'package:agro_inteli_colombia/screens/home_farmer.dart';
+import 'package:provider/provider.dart';
+import 'package:agro_inteli_colombia/screens/order.dart';
+import 'package:agro_inteli_colombia/screens/cart_product.dart';
 import 'package:agro_inteli_colombia/dominan/entities/producto.dart';
 import 'package:agro_inteli_colombia/screens/product_detail_screen.dart';
 import 'package:agro_inteli_colombia/services/carritoService.dart';
-import 'package:provider/provider.dart';
 
 void main() {
   final UsuariotService usuarioService = UsuariotService();
@@ -67,6 +68,7 @@ class MainApp extends StatelessWidget {
         Routes.geoMap: (context) => GeoMapScreen(),
         Routes.addProduct: (context) => AddProductScreen(),
         Routes.homeFarmer: (context) => HomeFarmer(),
+        Routes.order: (context) => OrderScreen(),
         Routes.cartDetail: (context) => CartScreen()
       },
       onGenerateRoute: (settings) {
