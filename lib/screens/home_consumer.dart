@@ -66,6 +66,7 @@ class HomeConsumer extends StatelessWidget {
                   ),
                 ),
 
+                //Se llama la clase del slide de las categorias
                 CategoriasWidget(),
 
                 //Productos
@@ -113,6 +114,7 @@ class HomeConsumer extends StatelessWidget {
   }
 }
 
+//Header y cuadro de busqueda
 class HomeAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
